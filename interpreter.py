@@ -31,6 +31,7 @@ progPtr = 0  # pointer for program
 
 while progPtr < len(prog):
     if prog[progPtr] == "<":
+        # since we are using a dict not list there is no reason to do anything except move the pointer here
         memPtr -= 1
 
     elif prog[progPtr] == ">":
@@ -48,16 +49,20 @@ while progPtr < len(prog):
         print(str(chr(memDict.get(memPtr, 0))), end="")
 
     elif prog[progPtr] == ",":
-        memDict[memPtr] = ord(input("input:"))
+        # due to difficulties trying to find how to give ascii 0 as a character,
+        # I've decided no input will stand in for NULL
+        # TODO look into whether it is possible to input a NULL in python
+
+        memDict[memPtr] = ord(x[0] if (x := input("input:")) != "" else "\0")
 
     elif prog[progPtr] == "[":
-        if memDict[memPtr] == 0:
+        if memDict.get(memPtr, 0) == 0:
             layers = 0
-            while prog[progPtr] != "]" or layers != 0:
+            while prog[progPtr] != "]" and layers != 0:
                 progPtr += 1
 
     elif prog[progPtr] == "]":
-        if memDict[memPtr] != 0:
+        if memDict.get(memPtr, 0) != 0:
             layers = 0
             while prog[progPtr] != "[" or layers != 0:
                 progPtr -= 1
